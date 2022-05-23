@@ -6,22 +6,6 @@
   when:
     - telegraf_agent_package_state != "latest"
 
-- name: "Debian | Set telegraf_agent_package_arch"
-  set_fact:
-    telegraf_agent_package_arch: "{{ ansible_architecture }}"
-
-- name: "Debian | Set telegraf_agent_package_arch specific for x86_64"
-  set_fact:
-    telegraf_agent_package_arch: "amd64"
-  when:
-    - ansible_architecture == "x86_64"
-
-- name: "Debian | Set telegraf_agent_package_arch specific for arm64"
-  set_fact:
-    telegraf_agent_package_arch: "armhf"
-  when:
-    - ansible_architecture == "arm64"
-
 - name: "Debian | Ensure the system can use the HTTPS transport for APT"
   stat:
     path: /usr/lib/apt/methods/https

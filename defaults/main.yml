@@ -2,7 +2,7 @@
 telegraf_enabled: True
 # defaults file for ansible-telegraf
 
-telegraf_agent_version: 1.18.2
+telegraf_agent_version: 1.22.2
 telegraf_agent_version_patch: 1
 telegraf_agent_package: telegraf
 telegraf_agent_package_file_deb: telegraf_{{ telegraf_agent_version }}-{{ telegraf_agent_version_patch }}_{{ telegraf_agent_package_arch }}.deb
@@ -54,14 +54,26 @@ telegraf_plugins_default:
   - plugin: cpu
     config:
       - percpu = true
+      - totalcpu = true
+      - fieldpass = ["usage_system", "usage_idle"]
   - plugin: disk
+      - ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs", "netns", "none", "shm", "nsfs"]
+      - fieldpass = ["used", "used_percent", "free"]
   - plugin: io
+      - device_tags = ["ID_FS_TYPE", "ID_SERIAL"]
+      - fieldpass = ["read_bytes", "write_bytes", "read_time", "read_write", "read", "writes"]
   - plugin: mem
+      - fieldpass = ["used", "used_percent", "total"]
   - plugin: net
+      - interfaces = ["eth*", "enp0s[0-1]", "lo", "br*", "tailscale*", "hassio"]
+      - fieldpass = ["bytes_sent", "bytes_recv", "err_in", "err_out", "drop_in", "drop_out"]
   - plugin: system
+      - fieldpass = ["load1", "load15", "load5", "uptime", "n_cpus"]
   - plugin: swap
+      - fieldpass = ["used", "free"]
   - plugin: netstat
   - plugin: processes
+      - fieldpass = ["running", "zombie", "sleeping", "total"]
   - plugin: kernel
 
 # extra configuration - /etc/telegraf/telegraf.d/*
@@ -85,9 +97,9 @@ telegraf_zypper_repos:
   "sles": "http://download.opensuse.org/repositories/devel:/languages:/go/SLE_{{ ansible_distribution_major_version }}_SP{{ ansible_distribution_release }}/"
   "opensuse leap": "http://download.opensuse.org/repositories/devel:/languages:/go/openSUSE_Leap_{{ ansible_distribution_version }}/"
 
-telegraf_win_install_dir: 'C:\Telegraf'
-telegraf_win_logfile: 'C:\\Telegraf\\telegraf.log'
-telegraf_win_include: 'C:\Telegraf\telegraf_agent.d'
+telegraf_win_install_dir: 'C:\\Program\ Files\\Telegraf'
+telegraf_win_logfile: 'C:\\Program\ Files\Telegraf\\telegraf.log'
+telegraf_win_include: 'C:\Program\ Files\Telegraf\telegraf_agent.d'
 telegraf_win_service_args:
   - -service install
   - -config {{ telegraf_win_install_dir }}\telegraf.conf

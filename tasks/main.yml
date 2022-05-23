@@ -1,6 +1,28 @@
 ---
 # tasks file for ansible-telegraf
 
+- name: "Set telegraf_agent_package_os_name"
+  set_fact:
+    telegraf_agent_package_os_name: "{{ description }}"
+
+- name: "Set telegraf_agent_package_os_type"
+  set_fact:
+    telegraf_agent_package_os_type: "{{ ansible_system }}"
+
+- name: "Set telegraf_agent_package_arch"
+  set_fact:
+    telegraf_agent_package_arch: "{{ ansible_architecture }}"
+
+- name: "Set telegraf_agent_package_machine_type"
+  set_fact:
+    telegraf_agent_package_machine_type: "bare_metal"
+
+- name: "Set telegraf_agent_package_machine_type"
+  set_fact:
+    telegraf_agent_package_machine_type: "vm"
+  when:
+    - ansible_virtualization_tech_host == "kvm"
+
 - name: "Install on RedHat"
   include_tasks: "RedHat.yml"
   when:
